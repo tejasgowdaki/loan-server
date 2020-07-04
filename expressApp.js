@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const path = require("path");
 
-const router = require("./routes");
+const router = require("./api/routes");
 const response = require("./helpers/response");
 
 const app = express();

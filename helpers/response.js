@@ -1,9 +1,9 @@
 const userErrorMessage = "Is this unprecedented?. Press the magic button";
-const success = (data = {}) => ({ success: true, ...data });
+const success = ( data = {}) => ({ success: true, ...data });
 
-const error = (data = {}) => ({
+const error = (message = null, data = {}) => ({
   success: false,
-  message: userErrorMessage,
+  message: message || userErrorMessage,
   ...data
 });
 
