@@ -1,29 +1,22 @@
-const Schema = require("mongoose").Schema;
+const Schema = require('mongoose').Schema;
 
-const DepositSchema = new Schema(
-  {
-    depositId: {
-      type: String,
-      unique: true,
-      required: true
-    },
-    amount: {
-      type: Number,
-      required: true
-    },
-    date: {
-      type: Date,
-      required: true,
-      default: new Date()
-    }
+const DepositSchema = new Schema({
+  amount: {
+    type: Number,
+    required: true
   },
-);
+  date: {
+    type: Date,
+    required: true,
+    default: new Date()
+  }
+});
 
 const SavingSchema = new Schema(
   {
     memberId: {
       type: Schema.Types.ObjectId,
-      ref: "Member",
+      ref: 'Member',
       required: true
     },
     totalSaving: {
@@ -40,5 +33,4 @@ const SavingSchema = new Schema(
   }
 );
 
-module.exports = mongooseConnection =>
-  mongooseConnection.model("Saving", SavingSchema);
+module.exports = mongooseConnection => mongooseConnection.model('Saving', SavingSchema);

@@ -64,9 +64,9 @@ const validateDepositDelete = depositId => {
   }
 };
 
-const constructCreateObject = (memberId, amount, date, depositId, saving) => {
+const constructCreateObject = (memberId, amount, date, saving) => {
   try {
-    saving.deposits.push({ depositId, amount, date });
+    saving.deposits.push({ amount, date });
     const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
 
     return { ...saving, totalSaving };
@@ -77,7 +77,7 @@ const constructCreateObject = (memberId, amount, date, depositId, saving) => {
 
 const constructUpdateObject = (memberId, amount, date, depositId, saving) => {
   try {
-    let currentDeposit = saving.deposits.find(d => d.depositId === depositId);
+    let currentDeposit = saving.deposits.find(d => d._id.toString() === depositId.toString());
     currentDeposit.amount = amount;
     currentDeposit.date = date;
 
@@ -91,7 +91,7 @@ const constructUpdateObject = (memberId, amount, date, depositId, saving) => {
 
 const constructDeleteDepositObject = (depositId, saving) => {
   try {
-    saving.deposits = saving.deposits.filter(d => d.depositId !== depositId);
+    saving.deposits = saving.deposits.filter(d => d._id.toString() !== depositId.toString());
 
     const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
 

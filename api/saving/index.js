@@ -29,11 +29,9 @@ const addDeposit = async (req, res) => {
 
     const { memberId = null, amount = 0, date = null } = req.body;
 
-    const depositId = generateRandomNumber(memberId);
+    await validate({ memberId, amount, date });
 
-    await validate({ memberId, amount, date, depositId });
-
-    const updateObject = constructCreateObject(memberId, amount, date, depositId, { ...existingSaving });
+    const updateObject = constructCreateObject(memberId, amount, date, { ...existingSaving });
 
     const saving = await Saving.findByIdAndUpdate(req.params.id, updateObject, {
       new: true
