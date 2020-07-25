@@ -1,6 +1,6 @@
 const response = require("../../helpers/response");
 
-const { Member } = require("../../models");
+const { Member, Saving } = require("../../models");
 
 const { validate } = require("./service");
 
@@ -22,8 +22,13 @@ const create = async (req, res) => {
     await validate({ name, mobile });
 
     const member = await Member.create({ name, mobile });
+    const saving = await Saving.create({
+      memberId: member._id,
+      totalSaving: 0,
+      deposits: []
+    });
 
-    res.status(201).json(response.success({ member }));
+    res.status(201).json(response.success({ member, saving }));
   } catch (error) {
     res.status(error.status || 500).json(response.error(error.message));
   }
@@ -31,15 +36,23 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
+    const existingMember = await Member.findOne({ _id: req.params.id });
+
+    if (!existingMember) {
+      let error = new Error("Member not found");
+      error.status = 404;
+      throw error;
+    }
+
     const name = (req.body.name || "").trim();
     const mobile = (req.body.mobile || "").trim();
 
-    await validate({ name, mobile });
+    await validate({ name, mobile }, req.params.id);
 
     const member = await Member.findByIdAndUpdate(
       req.params.id,
       { name, mobile },
-      { new: true, runValidators: true }
+      { new: true }
     );
 
     res.status(200).json(response.success({ member }));
@@ -50,6 +63,14 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
   try {
+    const existingMember = await Member.findOne({ _id: req.params.id });
+
+    if (!existingMember) {
+      let error = new Error("Member not found");
+      error.status = 404;
+      throw error;
+    }
+
     await Member.deleteOne({ _id: req.params.id });
     res.status(200).json(response.success({ memberId: req.params.id }));
   } catch (error) {

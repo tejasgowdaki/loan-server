@@ -2,7 +2,7 @@ const Schema = require("mongoose").Schema;
 
 const DepositSchema = new Schema(
   {
-    id: {
+    depositId: {
       type: String,
       unique: true,
       required: true
@@ -30,7 +30,10 @@ const SavingSchema = new Schema(
       type: Number,
       default: 0
     },
-    deposits: [DepositSchema]
+    deposits: {
+      type: [DepositSchema],
+      default: []
+    }
   },
   {
     timestamps: true
