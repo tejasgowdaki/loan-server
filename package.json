@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "lint-staged": {
+    "*.{js,jsx,json,css}": [
+      "prettier --print-width 120 --single-quote --write",
+      "git add"
+    ]
+  },
   "scripts": {
+    "precommit": "lint-staged",
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

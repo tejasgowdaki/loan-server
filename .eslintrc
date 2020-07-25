@@ -37,6 +37,7 @@
         }
     },
     "env": {
-        "es6": true
+        "es5": true,
+        "node": true
     }
 }
