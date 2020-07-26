@@ -1,11 +1,6 @@
-const Schema = require("mongoose").Schema;
+const Schema = require('mongoose').Schema;
 
 const PaymentSchema = new Schema({
-  id: {
-    type: String,
-    unique: true,
-    required: true
-  },
   loanAmount: {
     type: Number,
     required: true
@@ -29,10 +24,10 @@ const LoanSchema = new Schema(
   {
     memberId: {
       type: Schema.Types.ObjectId,
-      ref: "Member",
+      ref: 'Member',
       required: true
     },
-    loanAmount: {
+    amount: {
       type: Number,
       required: true
     },
@@ -41,12 +36,14 @@ const LoanSchema = new Schema(
       required: true,
       default: 0
     },
-    payments: [PaymentSchema]
+    payments: {
+      type: [PaymentSchema],
+      default: []
+    }
   },
   {
     timestamps: true
   }
 );
 
-module.exports = mongooseConnection =>
-  mongooseConnection.model("Loan", LoanSchema);
+module.exports = (mongooseConnection) => mongooseConnection.model('Loan', LoanSchema);
