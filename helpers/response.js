@@ -1,15 +1,23 @@
 const userErrorMessage = 'Is this unprecedented?. Press the magic button';
+
 const success = (data = {}) => ({ success: true, ...data });
 
-const error = (message = null, data = {}) => ({
-  success: false,
-  message: message || userErrorMessage,
-  ...data
-});
+const error = (errorObject, message = null, data = {}) => {
+  let errorMessage = '';
+  if (errorObject) {
+    console.error(errorObject);
+    errorMessage = errorObject.message;
+  }
+
+  return {
+    success: false,
+    message: message || errorMessage || userErrorMessage,
+    ...data
+  };
+};
 
 const apiError = (err, req, res, next) => {
-  console.error('apiError -> err', err);
-  res.status(err.status || 401).json(error({ message: err.message }));
+  res.status(err.status || 401).json(error(err));
 };
 
 module.exports = { success, error, apiError };

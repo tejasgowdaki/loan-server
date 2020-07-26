@@ -40,8 +40,7 @@ router(app);
 
 // Error handler
 app.use((error, req, res, next) => {
-  console.error('error', error);
-  res.status(error.status || 500).json(response.error({ message: 'Something went wrong. Please try again' }));
+  res.status(error.status || 500).json(response.error(error));
 });
 
 module.exports = app;

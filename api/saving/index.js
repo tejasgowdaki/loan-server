@@ -19,7 +19,7 @@ const fetchAll = async (req, res) => {
 
     res.status(200).json(response.success({ savings }));
   } catch (error) {
-    res.status(error.status || 500).json(response.error(error.message));
+    res.status(error.status || 500).json(response.error(error));
   }
 };
 
@@ -39,7 +39,7 @@ const addDeposit = async (req, res) => {
 
     res.status(201).json(response.success({ saving }));
   } catch (error) {
-    res.status(error.status || 500).json(response.error(error.message));
+    res.status(error.status || 500).json(response.error(error));
   }
 };
 
@@ -59,7 +59,7 @@ const updateDeposit = async (req, res) => {
 
     res.status(200).json(response.success({ saving }));
   } catch (error) {
-    res.status(error.status || 500).json(response.error(error.message));
+    res.status(error.status || 500).json(response.error(error));
   }
 };
 
@@ -79,7 +79,7 @@ const deleteDeposit = async (req, res) => {
 
     res.status(200).json(response.success({ saving }));
   } catch (error) {
-    res.status(error.status || 500).json(response.error(error.message));
+    res.status(error.status || 500).json(response.error(error));
   }
 };
 
