@@ -6,7 +6,6 @@ const { validate } = require('./service');
 
 const fetchAll = async (req, res) => {
   try {
-    const adf = asf;
     const members = await Member.find();
 
     res.status(200).json(response.success({ members }));
