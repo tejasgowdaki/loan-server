@@ -1,15 +1,15 @@
 const Schema = require('mongoose').Schema;
 
 const PaymentSchema = new Schema({
-  loanAmount: {
+  amount: {
     type: Number,
     required: true
   },
-  interestAmount: {
+  interest: {
     type: Number,
     default: 0
   },
-  totalAmount: {
+  total: {
     type: Number,
     required: true
   },
@@ -36,6 +36,11 @@ const LoanSchema = new Schema(
       required: true,
       default: 0
     },
+    paidInterest: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     payments: {
       type: [PaymentSchema],
       default: []
@@ -46,4 +51,4 @@ const LoanSchema = new Schema(
   }
 );
 
-module.exports = (mongooseConnection) => mongooseConnection.model('Loan', LoanSchema);
+module.exports = mongooseConnection => mongooseConnection.model('Loan', LoanSchema);
