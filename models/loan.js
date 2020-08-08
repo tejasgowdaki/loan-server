@@ -9,10 +9,6 @@ const PaymentSchema = new Schema({
     type: Number,
     default: 0
   },
-  total: {
-    type: Number,
-    required: true
-  },
   date: {
     type: Date,
     required: true,
@@ -26,6 +22,11 @@ const LoanSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Member',
       required: true
+    },
+    date: {
+      type: Date,
+      required: true,
+      default: new Date()
     },
     amount: {
       type: Number,
@@ -51,4 +52,4 @@ const LoanSchema = new Schema(
   }
 );
 
-module.exports = mongooseConnection => mongooseConnection.model('Loan', LoanSchema);
+module.exports = (mongooseConnection) => mongooseConnection.model('Loan', LoanSchema);

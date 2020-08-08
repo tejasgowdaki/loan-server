@@ -2,7 +2,7 @@ const { Saving } = require('../../models');
 
 const { isNumber } = require('../../helpers/utils');
 
-const validatePresence = async id => {
+const validatePresence = async (id) => {
   try {
     const existingSaving = await Saving.findOne({ _id: id }).lean();
 
@@ -50,7 +50,7 @@ const validate = async ({ memberId, amount, date, depositId }, id = null) => {
   }
 };
 
-const validateDepositDelete = depositId => {
+const validateDepositDelete = (depositId) => {
   try {
     if (!depositId) {
       let error = new Error('Deposit not found');
@@ -64,7 +64,7 @@ const validateDepositDelete = depositId => {
   }
 };
 
-const constructCreateObject = (memberId, amount, date, saving) => {
+const constructCreateObject = (amount, date, saving) => {
   try {
     saving.deposits.push({ amount, date });
     const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
@@ -75,23 +75,9 @@ const constructCreateObject = (memberId, amount, date, saving) => {
   }
 };
 
-const constructUpdateObject = (memberId, amount, date, depositId, saving) => {
-  try {
-    let currentDeposit = saving.deposits.find(d => d._id.toString() === depositId.toString());
-    currentDeposit.amount = amount;
-    currentDeposit.date = date;
-
-    const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
-
-    return { ...saving, totalSaving };
-  } catch (error) {
-    throw error;
-  }
-};
-
 const constructDeleteDepositObject = (depositId, saving) => {
   try {
-    saving.deposits = saving.deposits.filter(d => d._id.toString() !== depositId.toString());
+    saving.deposits = saving.deposits.filter((d) => d._id.toString() !== depositId.toString());
 
     const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
 
@@ -106,6 +92,5 @@ module.exports = {
   validate,
   validateDepositDelete,
   constructCreateObject,
-  constructUpdateObject,
   constructDeleteDepositObject
 };

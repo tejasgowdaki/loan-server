@@ -12,4 +12,8 @@ loanRouter.put('/:id', loan.update);
 
 loanRouter.delete('/:id', loan.delete);
 
+loanRouter.post('/add/:id', loan.addPayment);
+
+loanRouter.post('/delete/:id', loan.deletePayment);
+
 module.exports = loanRouter;
