@@ -15,6 +15,7 @@ PORT=4000
 ## Create config/env.json
 ```
 {
-  "DB_URL": "mongodb://localhost:27017/db_name"
+  "DB_URL": "mongodb://localhost:27017/db_name",
+  "MSG_91_AUTH": "auth_key"
 }
 ```
