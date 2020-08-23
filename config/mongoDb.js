@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const logger = require('../config/logger');
+
 const mongooseOptions = {
   poolSize: 3,
   useNewUrlParser: true,
@@ -12,20 +14,20 @@ mongoose.Promise = global.Promise;
 const db = mongoose.createConnection(process.env.DB_URL, mongooseOptions);
 
 mongoose.connection.on('connected', () => {
-  console.log('Mongoose default connection open');
+  logger.info('Mongoose default connection open');
 });
 
 mongoose.connection.on('error', error => {
-  console.error('Mongoose default connection error', error);
+  logger.error('Mongoose default connection error', error);
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('Mongoose default connection disconnected');
+  logger.info('Mongoose default connection disconnected');
 });
 
 process.on('SIGINT', () => {
   mongoose.connection.close(() => {
-    console.log('Mongoose default connection disconnected through app termination');
+    logger.info('Mongoose default connection disconnected through app termination');
     process.exit(0);
   });
 });

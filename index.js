@@ -1,29 +1,34 @@
-const fs = require('fs');
-const path = require('path');
-
 require('dotenv').config();
 
 const expressApp = require('./expressApp');
+const logger = require('./config/logger');
 
 process.on('SIGINT', () => {
-  console.log('process exit on SIGINT');
+  logger.error('process exit on SIGINT');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('process exit on SIGTERM');
+  logger.error('process exit on SIGTERM');
   process.exit(1);
 });
 
 process.on('uncaughtException', error => {
-  console.error('process exit on uncaughtException', error);
+  // TODO: check if logging to file
+  logger.error(error.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', error => {
+  // TODO: check if logging to file
+  logger.error(error.stack);
   process.exit(1);
 });
 
 process.on('exit', code => {
-  console.log('process exit', code);
+  logger.info(`process exit code: ${process.env.PORT}`);
 });
 
 expressApp.listen(process.env.PORT, () => {
-  console.log(`Loan server app running at PORT: ${process.env.PORT}`);
+  logger.info(`Listening on port ${process.env.PORT}...`);
 });

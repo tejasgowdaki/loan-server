@@ -4,9 +4,12 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
+const helmet = require('helmet');
 
 const router = require('./api/routes');
 const response = require('./helpers/response');
+const error = require('./middleware/error');
+const corsHeader = require('./middleware/corsHeader');
 
 const app = express();
 
@@ -24,23 +27,15 @@ app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Enable CORS from client-side
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials'
-  );
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
+app.use(helmet());
 
+// Enable CORS from client-side
+app.use(corsHeader);
+
+// add routes
 router(app);
 
 // Error handler
-app.use((error, req, res, next) => {
-  res.status(error.status || 500).json(response.error(error));
-});
+app.use(error);
 
 module.exports = app;
