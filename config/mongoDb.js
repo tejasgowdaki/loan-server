@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
-
-const { DB_URL } = require("./env.json");
+const mongoose = require('mongoose');
 
 const mongooseOptions = {
   poolSize: 3,
@@ -11,25 +9,23 @@ const mongooseOptions = {
 };
 
 mongoose.Promise = global.Promise;
-const db = mongoose.createConnection(DB_URL, mongooseOptions);
+const db = mongoose.createConnection(process.env.DB_URL, mongooseOptions);
 
-mongoose.connection.on("connected", () => {
-  console.log("Mongoose default connection open");
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose default connection open');
 });
 
-mongoose.connection.on("error", error => {
-  console.error("Mongoose default connection error", error);
+mongoose.connection.on('error', error => {
+  console.error('Mongoose default connection error', error);
 });
 
-mongoose.connection.on("disconnected", () => {
-  console.log("Mongoose default connection disconnected");
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose default connection disconnected');
 });
 
-process.on("SIGINT", () => {
+process.on('SIGINT', () => {
   mongoose.connection.close(() => {
-    console.log(
-      "Mongoose default connection disconnected through app termination"
-    );
+    console.log('Mongoose default connection disconnected through app termination');
     process.exit(0);
   });
 });
