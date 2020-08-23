@@ -1,15 +1,17 @@
-const express = require("express");
+const express = require('express');
 
 const memberRouter = express.Router();
 
-const member = require("./index");
+const async = require('../../middleware/async');
 
-memberRouter.get("/", member.fetchAll);
+const member = require('./index');
 
-memberRouter.post("/", member.create);
+memberRouter.get('/', async(member.fetchAll));
 
-memberRouter.put("/:id", member.update);
+memberRouter.post('/', async(member.create));
 
-memberRouter.delete("/:id", member.delete);
+memberRouter.put('/:id', async(member.update));
+
+memberRouter.delete('/:id', async(member.delete));
 
 module.exports = memberRouter;

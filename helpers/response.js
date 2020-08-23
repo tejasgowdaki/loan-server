@@ -1,3 +1,5 @@
+const logger = require('../config/logger');
+
 const userErrorMessage = 'Is this unprecedented?. Press the magic button';
 
 const success = (data = {}) => ({ success: true, ...data });
@@ -5,7 +7,8 @@ const success = (data = {}) => ({ success: true, ...data });
 const error = (errorObject, message = null, data = {}) => {
   let errorMessage = '';
   if (errorObject) {
-    console.error(errorObject);
+    logger.error(errorObject.stack);
+
     errorMessage = errorObject.message;
   }
 

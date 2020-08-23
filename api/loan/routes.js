@@ -2,18 +2,20 @@ const express = require('express');
 
 const loanRouter = express.Router();
 
+const async = require('../../middleware/async');
+
 const loan = require('./index');
 
-loanRouter.get('/', loan.fetchAll);
+loanRouter.get('/', async(loan.fetchAll));
 
-loanRouter.post('/', loan.create);
+loanRouter.post('/', async(loan.create));
 
-loanRouter.put('/:id', loan.update);
+loanRouter.put('/:id', async(loan.update));
 
-loanRouter.delete('/:id', loan.delete);
+loanRouter.delete('/:id', async(loan.delete));
 
-loanRouter.post('/add/:id', loan.addPayment);
+loanRouter.post('/add/:id', async(loan.addPayment));
 
-loanRouter.post('/delete/:id', loan.deletePayment);
+loanRouter.post('/delete/:id', async(loan.deletePayment));
 
 module.exports = loanRouter;
