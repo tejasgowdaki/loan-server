@@ -1,4 +1,4 @@
-const Schema = require("mongoose").Schema;
+const Schema = require('mongoose').Schema;
 
 const MemberSchema = new Schema(
   {
@@ -10,6 +10,11 @@ const MemberSchema = new Schema(
     mobile: {
       type: String,
       required: true
+    },
+    accountId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Account',
+      required: true
     }
   },
   {
@@ -17,5 +22,4 @@ const MemberSchema = new Schema(
   }
 );
 
-module.exports = mongooseConnection =>
-  mongooseConnection.model("Member", MemberSchema);
+module.exports = (mongooseConnection) => mongooseConnection.model('Member', MemberSchema);
