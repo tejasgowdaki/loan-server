@@ -22,9 +22,9 @@ const create = async (req, res) => {
   const amount = req.body.amount;
   const date = req.body.date;
 
-  await validate({ memberId, amount, date });
+  await validate({ memberId, amount, date, accountId: req.account._id });
 
-  const loan = await Loan.create({ memberId, amount, date });
+  const loan = await Loan.create({ memberId, amount, date, accountId: req.account._id });
 
   res.status(201).json(response.success({ loan }));
 };

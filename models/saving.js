@@ -19,6 +19,11 @@ const SavingSchema = new Schema(
       ref: 'Member',
       required: true
     },
+    accountId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Account',
+      required: true
+    },
     totalSaving: {
       type: Number,
       default: 0
@@ -33,4 +38,4 @@ const SavingSchema = new Schema(
   }
 );
 
-module.exports = mongooseConnection => mongooseConnection.model('Saving', SavingSchema);
+module.exports = (mongooseConnection) => mongooseConnection.model('Saving', SavingSchema);

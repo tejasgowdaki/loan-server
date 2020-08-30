@@ -23,6 +23,11 @@ const LoanSchema = new Schema(
       ref: 'Member',
       required: true
     },
+    accountId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Account',
+      required: true
+    },
     date: {
       type: Date,
       required: true,

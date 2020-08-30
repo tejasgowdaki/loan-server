@@ -20,6 +20,7 @@ const create = async (req, res) => {
   const member = await Member.create(createObject);
   const saving = await Saving.create({
     memberId: member._id,
+    accountId: req.account._id,
     totalSaving: 0,
     deposits: []
   });

@@ -1,4 +1,4 @@
-const { Member, Loan } = require('../../models');
+const { Member, Loan, Account } = require('../../models');
 
 const validatePresence = async (id) => {
   try {
@@ -16,7 +16,7 @@ const validatePresence = async (id) => {
   }
 };
 
-const validate = async ({ memberId = null, amount = null, date = null }, loanId = null) => {
+const validate = async ({ memberId = null, amount = null, date = null, accountId = null }, loanId = null) => {
   try {
     if (!amount) {
       let error = new Error('Loan amount is required');
@@ -34,6 +34,19 @@ const validate = async ({ memberId = null, amount = null, date = null }, loanId 
       // update
       await validatePresence(loanId);
     } else {
+      if (!accountId) {
+        let error = new Error('Account is required');
+        error.status = 422;
+        throw error;
+      }
+
+      const account = await Account.findOne({ _id: accountId });
+      if (!account) {
+        let error = new Error('Account not found');
+        error.status = 404;
+        throw error;
+      }
+
       // create
       if (!memberId) {
         let error = new Error('Loan does not have member');

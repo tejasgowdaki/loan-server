@@ -1,15 +1,9 @@
-const { Member } = require('../../models');
+const { Member, Account } = require('../../models');
 
 const { isNumber } = require('../../helpers/utils');
 
 const validate = async ({ name, mobile, accountId }, id = null) => {
   try {
-    if (!id && !accountId) {
-      let error = new Error('Account is required');
-      error.status = 422;
-      throw error;
-    }
-
     if (!name) {
       let error = new Error('Name is required');
       error.status = 422;
@@ -33,6 +27,21 @@ const validate = async ({ name, mobile, accountId }, id = null) => {
       let error = new Error('Name already exists');
       error.status = 422;
       throw error;
+    }
+
+    if (!id) {
+      if (!accountId) {
+        let error = new Error('Account is required');
+        error.status = 422;
+        throw error;
+      }
+
+      const account = await Account.findOne({ _id: accountId });
+      if (!account) {
+        let error = new Error('Account not found');
+        error.status = 404;
+        throw error;
+      }
     }
 
     return true;
