@@ -114,7 +114,7 @@ const constructCreatePaymentObject = (amount, interest, date, loan) => {
     const paidAmount = loan.payments.reduce((sum, p) => (sum += p.amount), 0);
     const paidInterest = loan.payments.reduce((sum, p) => (sum += p.interest), 0);
 
-    if (paidAmount >= loan.amount) loan.isCompleted = true;
+    loan.isCompleted = paidAmount >= loan.amount ? true : false;
 
     return { ...loan, paidAmount, paidInterest };
   } catch (error) {
@@ -127,6 +127,8 @@ const constructDeletePaymentObject = (paymentId, loan) => {
     loan.payments = loan.payments.filter((p) => p._id.toString() !== paymentId.toString());
     const paidAmount = loan.payments.reduce((sum, p) => (sum += p.amount), 0);
     const paidInterest = loan.payments.reduce((sum, p) => (sum += p.interest), 0);
+
+    loan.isCompleted = paidAmount >= loan.amount ? true : false;
 
     return { ...loan, paidAmount, paidInterest };
   } catch (error) {
