@@ -1,17 +1,42 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function (req, res, next) {
+const { Account } = require('../models');
+
+module.exports = async (req, res, next) => {
   try {
     const token = req.header('x-auth-token');
-    if (!token) throw new Error('Access denied');
+    if (!token) {
+      let error = new Error('Session expired. Please login again');
+      error.status = 401;
+      throw error;
+    }
 
-    const account = jwt.verify(token, process.env.SECRET_KEY);
-    req.account = account;
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+
+    const account = await Account.findOne({ _id: payload._id });
+    if (!account) {
+      let error = new Error('Account not found. Please sign up');
+      error.status = 401;
+      throw error;
+    }
+
+    if (!account.isVerified) {
+      let error = new Error(
+        `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
+      );
+      error.status = 401;
+      throw error;
+    }
+
+    req.account = payload;
 
     next();
   } catch (error) {
-    let err = new Error('Access denied');
-    err.status = 401;
-    throw err;
+    if (error.message === 'jwt expired') {
+      let err = new Error('Session expired. Please login again');
+      err.status = 401;
+      next(err);
+    }
+    next(error);
   }
 };

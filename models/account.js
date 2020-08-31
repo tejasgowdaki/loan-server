@@ -14,6 +14,10 @@ const AccountSchema = new Schema(
     },
     otp: {
       type: String
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
     }
   },
   {

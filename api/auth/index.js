@@ -15,6 +15,14 @@ const sendLoginOTP = async (req, res) => {
     throw error;
   }
 
+  if (!existingAccountWithMobile.isVerified) {
+    let error = new Error(
+      `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
+    );
+    error.status = 422;
+    throw error;
+  }
+
   generateAndSendOTP(existingAccountWithMobile._id, existingAccountWithMobile.name, existingAccountWithMobile.mobile);
 
   res
@@ -31,6 +39,14 @@ const login = async (req, res) => {
   if (!existingAccountWithMobile) {
     let error = new Error('Account not found');
     error.status = 404;
+    throw error;
+  }
+
+  if (!existingAccountWithMobile.isVerified) {
+    let error = new Error(
+      `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
+    );
+    error.status = 422;
     throw error;
   }
 

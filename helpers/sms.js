@@ -8,6 +8,8 @@ const headers = { headers: { authKey: process.env.MSG_91_AUTH_KEY, 'Content-Type
 
 const sendSMS = async (message, numbers) => {
   try {
+    if (process.env.NODE_ENV === 'development') return;
+
     const body = { ...msg91RequestBody, sms: [{ message, to: numbers }] };
     const response = await axios.post(msg91URL, body, headers);
     logger.info(JSON.stringify(response.data));
