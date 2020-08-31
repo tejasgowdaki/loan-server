@@ -12,7 +12,7 @@ const {
 } = require('./service');
 
 const fetchAll = async (req, res) => {
-  const loans = await Loan.find();
+  const loans = await Loan.find({ accountId: req.account._id });
 
   res.status(200).json(response.success({ loans }));
 };

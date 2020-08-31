@@ -1,4 +1,4 @@
-const { Member, Saving, Loan } = require('../../models');
+const { Member, Saving, Loan, Transaction } = require('../../models');
 
 const fetchMembersCount = async (accountId) => {
   try {
@@ -30,4 +30,24 @@ const fetchLoanStats = async (accountId) => {
   }
 };
 
-module.exports = { fetchMembersCount, fetchTotalSavings, fetchLoanStats };
+const fetchTransactionStats = async (accountId) => {
+  try {
+    const transactions = await Transaction.find({ accountId });
+    return transactions.reduce(
+      (data, transaction) => {
+        if (transaction.type === 'income') {
+          data.income += transaction.amount;
+        } else if (transaction.type === 'expense') {
+          data.expense += transaction.amount;
+        }
+
+        return data;
+      },
+      { income: 0, expense: 0 }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { fetchMembersCount, fetchTotalSavings, fetchLoanStats, fetchTransactionStats };

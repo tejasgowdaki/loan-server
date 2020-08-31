@@ -9,6 +9,7 @@ const accountRouter = require('./account/routes');
 const memberRouter = require('./member/routes');
 const savingRouter = require('./saving/routes');
 const loanRouter = require('./loan/routes');
+const transactionRouter = require('./transaction/routes');
 const statsRouter = require('./stats/routes');
 
 const router = (app) => {
@@ -19,6 +20,7 @@ const router = (app) => {
   mainRouter.use('/members', authenticate, memberRouter, apiError);
   mainRouter.use('/savings', authenticate, savingRouter, apiError);
   mainRouter.use('/loans', authenticate, loanRouter, apiError);
+  mainRouter.use('/transactions', authenticate, transactionRouter, apiError);
   mainRouter.use('/stats', authenticate, statsRouter, apiError);
 
   // If no routes matches
