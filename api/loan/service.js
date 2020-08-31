@@ -68,10 +68,10 @@ const validate = async ({ memberId = null, amount = null, date = null, accountId
   }
 };
 
-const validatePayment = async ({ amount = null, date = null }, loan) => {
+const validatePayment = async ({ amount, interest, date }, loan) => {
   try {
-    if (!amount) {
-      let error = new Error('Payment amount is required');
+    if (!amount && !interest) {
+      let error = new Error('Payment amount or interest is required');
       error.status = 422;
       throw error;
     }

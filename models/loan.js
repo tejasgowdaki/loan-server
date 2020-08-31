@@ -3,7 +3,7 @@ const Schema = require('mongoose').Schema;
 const PaymentSchema = new Schema({
   amount: {
     type: Number,
-    required: true
+    default: 0
   },
   interest: {
     type: Number,

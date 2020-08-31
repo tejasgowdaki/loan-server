@@ -51,9 +51,9 @@ const destroy = async (req, res) => {
 const addPayment = async (req, res) => {
   const existingLoan = await validatePresence(req.params.id);
 
-  const { amount, date, interest } = req.body;
+  const { amount = 0, date = null, interest = 0 } = req.body;
 
-  await validatePayment({ amount, date }, existingLoan);
+  await validatePayment({ amount, interest, date }, existingLoan);
 
   const updateObject = constructCreatePaymentObject(amount, interest, date, { ...existingLoan });
 
