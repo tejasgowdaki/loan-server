@@ -17,7 +17,7 @@ mongoose.connection.on('connected', () => {
   logger.info('Mongoose default connection open');
 });
 
-mongoose.connection.on('error', error => {
+mongoose.connection.on('error', (error) => {
   logger.error('Mongoose default connection error', error);
 });
 

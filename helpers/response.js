@@ -20,7 +20,7 @@ const error = (errorObject, message = null, data = {}) => {
 };
 
 const apiError = (err, req, res, next) => {
-  res.status(err.status || 401).json(error(err));
+  res.status(err.status || 500).json(error(err));
 };
 
 module.exports = { success, error, apiError };

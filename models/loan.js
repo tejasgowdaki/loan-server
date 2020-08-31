@@ -50,6 +50,10 @@ const LoanSchema = new Schema(
     payments: {
       type: [PaymentSchema],
       default: []
+    },
+    isCompleted: {
+      type: Boolean,
+      default: false
     }
   },
   {

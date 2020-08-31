@@ -18,6 +18,10 @@ const AccountSchema = new Schema(
     isVerified: {
       type: Boolean,
       default: false
+    },
+    isSmsEnabled: {
+      type: Boolean,
+      default: false
     }
   },
   {

@@ -4,6 +4,8 @@ const { Member, Saving } = require('../../models');
 
 const { validate } = require('./service');
 
+const sendSMS = require('../../helpers/sms');
+
 const fetchAll = async (req, res) => {
   const members = await Member.find({ accountId: req.account._id });
   res.status(200).json(response.success({ members }));
@@ -24,6 +26,8 @@ const create = async (req, res) => {
     totalSaving: 0,
     deposits: []
   });
+
+  if (req.account.isSmsEnabled) sendSMS(`Hello ${name}, welcome to ${req.account.name}`, [mobile]);
 
   res.status(201).json(response.success({ member, saving }));
 };

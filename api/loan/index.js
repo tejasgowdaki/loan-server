@@ -1,6 +1,6 @@
 const response = require('../../helpers/response');
 
-const { Loan } = require('../../models');
+const { Loan, Member } = require('../../models');
 
 const {
   validatePresence,
@@ -10,6 +10,8 @@ const {
   constructCreatePaymentObject,
   constructDeletePaymentObject
 } = require('./service');
+
+const sendSMS = require('../../helpers/sms');
 
 const fetchAll = async (req, res) => {
   const loans = await Loan.find({ accountId: req.account._id });
@@ -25,6 +27,13 @@ const create = async (req, res) => {
   await validate({ memberId, amount, date, accountId: req.account._id });
 
   const loan = await Loan.create({ memberId, amount, date, accountId: req.account._id });
+
+  if (req.account.isSmsEnabled) {
+    const member = await Member.findOne({ _id: loan.memberId });
+    sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
+      member.mobile
+    ]);
+  }
 
   res.status(201).json(response.success({ loan }));
 };
@@ -60,6 +69,13 @@ const addPayment = async (req, res) => {
   const loan = await Loan.findByIdAndUpdate(req.params.id, updateObject, {
     new: true
   });
+
+  if (req.account.isSmsEnabled) {
+    const member = await Member.findOne({ _id: loan.memberId });
+    sendSMS(`Hello ${member.name}, a loan payment has been made from you to ${req.account.name} of Rs. ${amount}`, [
+      member.mobile
+    ]);
+  }
 
   res.status(200).json(response.success({ loan }));
 };

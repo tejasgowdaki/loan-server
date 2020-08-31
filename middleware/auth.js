@@ -28,7 +28,9 @@ module.exports = async (req, res, next) => {
       throw error;
     }
 
-    req.account = payload;
+    const { _id, name, mobile, isVerified, isSmsEnabled } = account;
+
+    req.account = { _id, name, mobile, isVerified, isSmsEnabled };
 
     next();
   } catch (error) {
