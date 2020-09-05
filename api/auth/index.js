@@ -5,9 +5,9 @@ const { Account } = require('../../models');
 const { generateJwtToken, generateAndSendOTP } = require('./service');
 
 const sendLoginOTP = async (req, res) => {
-  const mobile = (req.body.mobile || '').trim();
+  const accountId = req.body.accountId;
 
-  const existingAccountWithMobile = await Account.findOne({ mobile });
+  const existingAccountWithMobile = await Account.findOne({ _id: accountId });
 
   if (!existingAccountWithMobile) {
     let error = new Error('Account not found');
@@ -31,10 +31,10 @@ const sendLoginOTP = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const mobile = (req.body.mobile || '').trim();
+  const accountId = req.body.accountId;
   const otp = (req.body.otp || '').trim();
 
-  const existingAccountWithMobile = await Account.findOne({ mobile });
+  const existingAccountWithMobile = await Account.findOne({ _id: accountId });
 
   if (!existingAccountWithMobile) {
     let error = new Error('Account not found');
@@ -58,7 +58,12 @@ const login = async (req, res) => {
 
   await Account.findByIdAndUpdate(existingAccountWithMobile._id, { otp: null });
 
-  const token = generateJwtToken({ _id: existingAccountWithMobile._id, name: existingAccountWithMobile.name, mobile });
+  const token = generateJwtToken({
+    _id: existingAccountWithMobile._id,
+    name: existingAccountWithMobile.name,
+    mobile: existingAccountWithMobile.mobile,
+    config: existingAccountWithMobile.config
+  });
 
   res.status(200).json(response.success({ token }));
 };

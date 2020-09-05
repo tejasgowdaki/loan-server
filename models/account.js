@@ -9,8 +9,7 @@ const AccountSchema = new Schema(
     },
     mobile: {
       type: String,
-      required: true,
-      unique: true
+      required: true
     },
     otp: {
       type: String

@@ -29,13 +29,6 @@ const validate = async ({ name, mobile }, id = null) => {
       throw error;
     }
 
-    const existingAccountByMobile = await Account.findOne({ mobile });
-    if (existingAccountByMobile && (!id || id.toString() !== existingAccountByMobile._id.toString())) {
-      let error = new Error('Mobile already exists');
-      error.status = 422;
-      throw error;
-    }
-
     return true;
   } catch (error) {
     throw error;
