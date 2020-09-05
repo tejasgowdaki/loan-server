@@ -19,9 +19,15 @@ const AccountSchema = new Schema(
       type: Boolean,
       default: false
     },
-    isSmsEnabled: {
-      type: Boolean,
-      default: false
+    config: {
+      isSmsEnabled: {
+        type: Boolean,
+        default: false
+      },
+      interestRate: {
+        type: Number,
+        default: 1
+      }
     }
   },
   {
