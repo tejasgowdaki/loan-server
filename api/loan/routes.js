@@ -10,6 +10,10 @@ loanRouter.get('/', async(loan.fetchAll));
 
 loanRouter.post('/', async(loan.create));
 
+loanRouter.post('/sub-loan/:id', async(loan.updateSubLoan));
+
+loanRouter.delete('/sub-loan/:id/:subLoanId', async(loan.deleteSubLoan));
+
 loanRouter.put('/:id', async(loan.update));
 
 loanRouter.delete('/:id', async(loan.delete));

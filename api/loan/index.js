@@ -7,6 +7,9 @@ const {
   validate,
   validatePayment,
   validatePaymentDelete,
+  constructCreateSubLoanObject,
+  constructUpdateSubLoanObject,
+  constructDeleteSubLoanObject,
   constructCreatePaymentObject,
   constructDeletePaymentObject
 } = require('./service');
@@ -20,20 +23,62 @@ const fetchAll = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const memberId = req.body.memberId;
-  const amount = req.body.amount;
-  const date = req.body.date;
+  const { memberId = null, amount = null, date = null } = req.body;
 
   await validate({ memberId, amount, date, accountId: req.account._id });
 
-  const loan = await Loan.create({ memberId, amount, date, accountId: req.account._id });
+  const createObject = constructCreateSubLoanObject(amount, date);
 
-  if (req.account.isSmsEnabled) {
-    const member = await Member.findOne({ _id: loan.memberId });
-    sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
-      member.mobile
-    ]);
-  }
+  const loan = await Loan.create({ memberId, accountId: req.account._id, ...createObject });
+
+  // if (req.account.isSmsEnabled) {
+  //   const member = await Member.findOne({ _id: loan.memberId });
+  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
+  //     member.mobile
+  //   ]);
+  // }
+
+  res.status(201).json(response.success({ loan }));
+};
+
+const updateSubLoan = async (req, res) => {
+  const existingLoan = await validatePresence(req.params.id);
+
+  const { _id, amount = null, date = null } = req.body;
+
+  await validate({ amount, date }, req.params.id);
+
+  const updateObject = constructUpdateSubLoanObject(_id, amount, date, existingLoan);
+
+  const loan = await Loan.findByIdAndUpdate(req.params.id, updateObject, {
+    new: true
+  });
+
+  // if (req.account.isSmsEnabled) {
+  //   const member = await Member.findOne({ _id: loan.memberId });
+  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
+  //     member.mobile
+  //   ]);
+  // }
+
+  res.status(201).json(response.success({ loan }));
+};
+
+const deleteSubLoan = async (req, res) => {
+  const existingLoan = await validatePresence(req.params.id);
+
+  const updateObject = constructDeleteSubLoanObject(req.params.subLoanId, existingLoan);
+
+  const loan = await Loan.findByIdAndUpdate(req.params.id, updateObject, {
+    new: true
+  });
+
+  // if (req.account.isSmsEnabled) {
+  //   const member = await Member.findOne({ _id: loan.memberId });
+  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
+  //     member.mobile
+  //   ]);
+  // }
 
   res.status(201).json(response.success({ loan }));
 };
@@ -70,12 +115,12 @@ const addPayment = async (req, res) => {
     new: true
   });
 
-  if (req.account.isSmsEnabled) {
-    const member = await Member.findOne({ _id: loan.memberId });
-    sendSMS(`Hello ${member.name}, a loan payment has been made from you to ${req.account.name} of Rs. ${amount}`, [
-      member.mobile
-    ]);
-  }
+  // if (req.account.isSmsEnabled) {
+  //   const member = await Member.findOne({ _id: loan.memberId });
+  //   sendSMS(`Hello ${member.name}, a loan payment has been made from you to ${req.account.name} of Rs. ${amount}`, [
+  //     member.mobile
+  //   ]);
+  // }
 
   res.status(200).json(response.success({ loan }));
 };
@@ -96,4 +141,4 @@ const deletePayment = async (req, res) => {
   res.status(200).json(response.success({ loan }));
 };
 
-module.exports = { fetchAll, create, update, delete: destroy, addPayment, deletePayment };
+module.exports = { fetchAll, create, updateSubLoan, deleteSubLoan, update, delete: destroy, addPayment, deletePayment };

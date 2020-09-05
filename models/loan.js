@@ -16,6 +16,19 @@ const PaymentSchema = new Schema({
   }
 });
 
+const SubLoansSchema = new Schema({
+  amount: {
+    type: Number,
+    default: 0,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true,
+    default: new Date()
+  }
+});
+
 const LoanSchema = new Schema(
   {
     memberId: {
@@ -27,11 +40,6 @@ const LoanSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Account',
       required: true
-    },
-    date: {
-      type: Date,
-      required: true,
-      default: new Date()
     },
     amount: {
       type: Number,
@@ -46,6 +54,10 @@ const LoanSchema = new Schema(
       type: Number,
       required: true,
       default: 0
+    },
+    subLoans: {
+      type: [SubLoansSchema],
+      default: []
     },
     payments: {
       type: [PaymentSchema],

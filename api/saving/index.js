@@ -31,12 +31,12 @@ const addDeposit = async (req, res) => {
     new: true
   });
 
-  if (req.account.isSmsEnabled) {
-    const member = await Member.findOne({ _id: saving.memberId });
-    sendSMS(`Hello ${member.name}, a savings deposit has been made in ${req.account.name} of Rs. ${amount} for you`, [
-      member.mobile
-    ]);
-  }
+  // if (req.account.isSmsEnabled) {
+  //   const member = await Member.findOne({ _id: saving.memberId });
+  //   sendSMS(`Hello ${member.name}, a savings deposit has been made in ${req.account.name} of Rs. ${amount} for you`, [
+  //     member.mobile
+  //   ]);
+  // }
 
   res.status(201).json(response.success({ saving }));
 };

@@ -108,6 +108,61 @@ const validatePaymentDelete = (paymentId) => {
   }
 };
 
+const constructCreateSubLoanObject = (amount, date) => {
+  try {
+    return { amount, subLoans: [{ amount, date }] };
+  } catch (error) {
+    throw error;
+  }
+};
+
+const constructUpdateSubLoanObject = (subLoanId, amount, date, loan) => {
+  try {
+    if (subLoanId) {
+      const subLoan = loan.subLoans.find((l) => l._id.toString() === subLoanId.toString());
+      subLoan.amount = amount;
+      subLoan.date = date;
+    } else {
+      loan.subLoans.push({ amount, date });
+    }
+
+    const totalAmount = loan.subLoans.reduce((sum, p) => (sum += p.amount), 0);
+
+    if (totalAmount < loan.paidAmount) {
+      let error = new Error('Loan paid amount cannot be greater than loan amount');
+      error.status = 422;
+      throw error;
+    }
+
+    loan.amount = totalAmount;
+    loan.isCompleted = loan.paidAmount >= totalAmount ? true : false;
+
+    return { ...loan };
+  } catch (error) {
+    throw error;
+  }
+};
+
+const constructDeleteSubLoanObject = (subLoanId, loan) => {
+  try {
+    loan.subLoans = loan.subLoans.filter((s) => s._id.toString() !== subLoanId.toString());
+    const totalAmount = loan.subLoans.reduce((sum, p) => (sum += p.amount), 0);
+
+    if (totalAmount < loan.paidAmount) {
+      let error = new Error('Loan paid amount cannot be greater than loan amount');
+      error.status = 422;
+      throw error;
+    }
+
+    loan.amount = totalAmount;
+    loan.isCompleted = loan.paidAmount >= totalAmount ? true : false;
+
+    return { ...loan };
+  } catch (error) {
+    throw error;
+  }
+};
+
 const constructCreatePaymentObject = (amount, interest, date, loan) => {
   try {
     loan.payments.push({ amount, interest, date });
@@ -141,6 +196,9 @@ module.exports = {
   validate,
   validatePayment,
   validatePaymentDelete,
+  constructCreateSubLoanObject,
+  constructUpdateSubLoanObject,
+  constructDeleteSubLoanObject,
   constructCreatePaymentObject,
   constructDeletePaymentObject
 };
