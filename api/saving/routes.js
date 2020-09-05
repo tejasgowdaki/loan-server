@@ -12,4 +12,6 @@ savingRouter.post('/add/:id', async(saving.addDeposit));
 
 savingRouter.post('/delete/:id', async(saving.deleteDeposit));
 
+savingRouter.post('/bulk', async(saving.bulkAddDeposit));
+
 module.exports = savingRouter;

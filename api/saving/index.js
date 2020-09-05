@@ -7,7 +7,9 @@ const {
   validate,
   validateDepositDelete,
   constructCreateObject,
-  constructDeleteDepositObject
+  constructDeleteDepositObject,
+  validateBulkDeposit,
+  updateBulkSavings
 } = require('./service');
 
 const sendSMS = require('../../helpers/sms');
@@ -41,6 +43,20 @@ const addDeposit = async (req, res) => {
   res.status(201).json(response.success({ saving }));
 };
 
+const bulkAddDeposit = async (req, res) => {
+  const { amount = 0, date = null } = req.body;
+
+  await validateBulkDeposit(amount, date);
+
+  const savings = await Saving.find({ accountId: req.account._id }).lean();
+
+  const promises = savings.map((s) => updateBulkSavings(amount, date, s));
+
+  const updatedSavings = await Promise.all(promises);
+
+  res.status(201).json(response.success({ savings: updatedSavings }));
+};
+
 const deleteDeposit = async (req, res) => {
   const existingSaving = await validatePresence(req.params.id);
 
@@ -57,4 +73,4 @@ const deleteDeposit = async (req, res) => {
   res.status(200).json(response.success({ saving }));
 };
 
-module.exports = { fetchAll, addDeposit, deleteDeposit };
+module.exports = { fetchAll, addDeposit, deleteDeposit, bulkAddDeposit };

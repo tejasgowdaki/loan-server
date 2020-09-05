@@ -50,6 +50,26 @@ const validate = async ({ memberId, amount, date, depositId }, id = null) => {
   }
 };
 
+const validateBulkDeposit = (amount, date) => {
+  try {
+    if (amount <= 0 || !isNumber(amount)) {
+      let error = new Error('Please enter correct amount');
+      error.status = 422;
+      throw error;
+    }
+
+    if (!date) {
+      let error = new Error('Please select date');
+      error.status = 422;
+      throw error;
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const validateDepositDelete = (depositId) => {
   try {
     if (!depositId) {
@@ -66,7 +86,12 @@ const validateDepositDelete = (depositId) => {
 
 const constructCreateObject = (amount, date, saving) => {
   try {
-    saving.deposits.push({ amount, date });
+    if (saving.deposits) {
+      saving.deposits.push({ amount, date });
+    } else {
+      saving.deposits = [{ amount, date }];
+    }
+
     const totalSaving = saving.deposits.reduce((sum, d) => (sum += d.amount), 0);
 
     return { ...saving, totalSaving };
@@ -87,10 +112,21 @@ const constructDeleteDepositObject = (depositId, saving) => {
   }
 };
 
+const updateBulkSavings = async (amount, date, saving) => {
+  try {
+    const updateObject = constructCreateObject(amount, date, { ...saving });
+    return await Saving.findByIdAndUpdate(saving._id, updateObject, { new: true });
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   validatePresence,
   validate,
   validateDepositDelete,
   constructCreateObject,
-  constructDeleteDepositObject
+  constructDeleteDepositObject,
+  validateBulkDeposit,
+  updateBulkSavings
 };
