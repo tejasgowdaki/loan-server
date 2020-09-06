@@ -58,12 +58,7 @@ const login = async (req, res) => {
 
   await Account.findByIdAndUpdate(existingAccountWithMobile._id, { otp: null });
 
-  const token = generateJwtToken({
-    _id: existingAccountWithMobile._id,
-    name: existingAccountWithMobile.name,
-    mobile: existingAccountWithMobile.mobile,
-    config: existingAccountWithMobile.config
-  });
+  const token = generateJwtToken({ _id: existingAccountWithMobile._id });
 
   res.status(200).json(response.success({ token }));
 };

@@ -7,12 +7,12 @@ const { validate } = require('./service');
 const sendSMS = require('../../helpers/sms');
 
 const fetchAll = async (req, res) => {
-  const accounts = await Account.find();
+  const accounts = await Account.find().select('_id name mobile config');
   res.status(200).json(response.success({ accounts }));
 };
 
 const fetchOne = async (req, res) => {
-  const account = await Account.findOne({ _id: req.params.id });
+  const account = await Account.findOne({ _id: req.params.id }).select('_id name mobile config');
 
   if (!account) {
     let error = new Error('Account not found');
