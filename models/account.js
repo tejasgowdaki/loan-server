@@ -26,6 +26,10 @@ const AccountSchema = new Schema(
       interestRate: {
         type: Number,
         default: 1
+      },
+      isShowNextInterest: {
+        type: Boolean,
+        default: false
       }
     }
   },
