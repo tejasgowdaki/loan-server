@@ -22,7 +22,7 @@ const validate = async ({ name, mobile, accountId }, id = null) => {
       throw error;
     }
 
-    const existingMemberByName = await Member.findOne({ name });
+    const existingMemberByName = await Member.findOne({ name, accountId });
     if (existingMemberByName && (!id || id.toString() !== existingMemberByName._id.toString())) {
       let error = new Error('Name already exists');
       error.status = 422;
