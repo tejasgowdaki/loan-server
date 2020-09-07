@@ -4,8 +4,7 @@ const MemberSchema = new Schema(
   {
     name: {
       type: String,
-      unique: true,
-      required: true
+      unique: true
     },
     mobile: {
       type: String,
