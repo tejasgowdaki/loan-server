@@ -9,3 +9,5 @@ config/env.json
 
 /log
 *.log
+
+/dump
