@@ -27,8 +27,6 @@ const create = async (req, res) => {
     deposits: []
   });
 
-  // if (req.account.isSmsEnabled) sendSMS(`Hello ${name}, welcome to ${req.account.name}`, [mobile]);
-
   res.status(201).json(response.success({ member, saving }));
 };
 

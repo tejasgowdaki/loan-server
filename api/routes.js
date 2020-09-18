@@ -16,7 +16,7 @@ const router = (app) => {
   const mainRouter = express.Router();
 
   mainRouter.use('/auth', authRouter, apiError);
-  mainRouter.use('/accounts', accountRouter, apiError);
+  mainRouter.use('/accounts', authenticate, accountRouter, apiError);
   mainRouter.use('/members', authenticate, memberRouter, apiError);
   mainRouter.use('/savings', authenticate, savingRouter, apiError);
   mainRouter.use('/loans', authenticate, loanRouter, apiError);

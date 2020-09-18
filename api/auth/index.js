@@ -1,21 +1,23 @@
 const response = require('../../helpers/response');
 
-const { Account } = require('../../models');
+const { Account, User } = require('../../models');
 
-const { generateJwtToken, generateAndSendOTP } = require('./service');
+const { generateJwtToken, generateAndSendOTP, validate } = require('./service');
+
+const sendSMS = require('../../helpers/sms');
 
 const sendLoginOTP = async (req, res) => {
-  const accountId = req.body.accountId;
+  const mobile = (req.body.mobile || '').trim();
 
-  const existingAccountWithMobile = await Account.findOne({ _id: accountId });
+  const existingUserWithMobile = await User.findOne({ mobile });
 
-  if (!existingAccountWithMobile) {
+  if (!existingUserWithMobile) {
     let error = new Error('Account not found');
     error.status = 404;
     throw error;
   }
 
-  if (!existingAccountWithMobile.isVerified) {
+  if (!existingUserWithMobile.isVerified) {
     let error = new Error(
       `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
     );
@@ -23,26 +25,26 @@ const sendLoginOTP = async (req, res) => {
     throw error;
   }
 
-  generateAndSendOTP(existingAccountWithMobile._id, existingAccountWithMobile.name, existingAccountWithMobile.mobile);
+  generateAndSendOTP(existingUserWithMobile._id, existingUserWithMobile.mobile);
 
   res
     .status(200)
-    .json(response.success({ message: `Successfully sent OTP to number ${existingAccountWithMobile.mobile}` }));
+    .json(response.success({ message: `Successfully sent OTP to number ${existingUserWithMobile.mobile}` }));
 };
 
 const login = async (req, res) => {
-  const accountId = req.body.accountId;
+  const mobile = (req.body.mobile || '').trim();
   const otp = (req.body.otp || '').trim();
 
-  const existingAccountWithMobile = await Account.findOne({ _id: accountId });
+  const existingUserWithMobile = await User.findOne({ mobile });
 
-  if (!existingAccountWithMobile) {
+  if (!existingUserWithMobile) {
     let error = new Error('Account not found');
     error.status = 404;
     throw error;
   }
 
-  if (!existingAccountWithMobile.isVerified) {
+  if (!existingUserWithMobile.isVerified) {
     let error = new Error(
       `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
     );
@@ -50,17 +52,45 @@ const login = async (req, res) => {
     throw error;
   }
 
-  if (!otp || existingAccountWithMobile.otp !== otp) {
+  if (!otp || existingUserWithMobile.otp !== otp) {
     let error = new Error('Invalid OTP');
     error.status = 401;
     throw error;
   }
 
-  await Account.findByIdAndUpdate(existingAccountWithMobile._id, { otp: null });
+  await User.findByIdAndUpdate(existingUserWithMobile._id, { otp: null });
 
-  const token = generateJwtToken({ _id: existingAccountWithMobile._id });
+  const token = generateJwtToken({
+    _id: existingUserWithMobile._id,
+    activeAccountId: existingUserWithMobile.activeAccountId
+  });
 
   res.status(200).json(response.success({ token }));
 };
 
-module.exports = { sendLoginOTP, login };
+const signUp = async (req, res) => {
+  const name = (req.body.name || '').trim();
+  const mobile = (req.body.mobile || '').trim();
+
+  await validate({ name, mobile });
+
+  let account = null;
+
+  const existingUser = await User.findOne({ mobile });
+
+  if (existingUser) {
+    account = await Account.create({ name, userId: existingUser._id });
+  } else {
+    const user = await User.create({ mobile });
+    account = await Account.create({ name, userId: user._id });
+    await User.findByIdAndUpdate(user._id, { activeAccountId: account._id });
+  }
+
+  sendSMS(`A new account has been created in Loan Manager with Name: ${name} and Mobile: ${mobile}`, [
+    process.env.NOTIFY_MOBILE
+  ]);
+
+  res.status(201).json(response.success({ account }));
+};
+
+module.exports = { sendLoginOTP, login, signUp };

@@ -31,13 +31,6 @@ const create = async (req, res) => {
 
   const loan = await Loan.create({ memberId, accountId: req.account._id, ...createObject });
 
-  // if (req.account.isSmsEnabled) {
-  //   const member = await Member.findOne({ _id: loan.memberId });
-  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
-  //     member.mobile
-  //   ]);
-  // }
-
   res.status(201).json(response.success({ loan }));
 };
 
@@ -54,13 +47,6 @@ const updateSubLoan = async (req, res) => {
     new: true
   });
 
-  // if (req.account.isSmsEnabled) {
-  //   const member = await Member.findOne({ _id: loan.memberId });
-  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
-  //     member.mobile
-  //   ]);
-  // }
-
   res.status(201).json(response.success({ loan }));
 };
 
@@ -72,13 +58,6 @@ const deleteSubLoan = async (req, res) => {
   const loan = await Loan.findByIdAndUpdate(req.params.id, updateObject, {
     new: true
   });
-
-  // if (req.account.isSmsEnabled) {
-  //   const member = await Member.findOne({ _id: loan.memberId });
-  //   sendSMS(`Hello ${member.name}, a loan has been granted for you from ${req.account.name} of Rs. ${amount}`, [
-  //     member.mobile
-  //   ]);
-  // }
 
   res.status(201).json(response.success({ loan }));
 };
@@ -114,13 +93,6 @@ const addPayment = async (req, res) => {
   const loan = await Loan.findByIdAndUpdate(req.params.id, updateObject, {
     new: true
   });
-
-  // if (req.account.isSmsEnabled) {
-  //   const member = await Member.findOne({ _id: loan.memberId });
-  //   sendSMS(`Hello ${member.name}, a loan payment has been made from you to ${req.account.name} of Rs. ${amount}`, [
-  //     member.mobile
-  //   ]);
-  // }
 
   res.status(200).json(response.success({ loan }));
 };

@@ -10,4 +10,6 @@ authRouter.post('/send-login-otp', async(auth.sendLoginOTP));
 
 authRouter.post('/login', async(auth.login));
 
+authRouter.post('/signup', async(auth.signUp));
+
 module.exports = authRouter;

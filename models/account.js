@@ -7,16 +7,10 @@ const AccountSchema = new Schema(
       unique: true,
       required: true
     },
-    mobile: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true
-    },
-    otp: {
-      type: String
-    },
-    isVerified: {
-      type: Boolean,
-      default: false
     },
     config: {
       isSmsEnabled: {

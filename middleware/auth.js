@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { Account } = require('../models');
+const { Account, User } = require('../models');
 
 module.exports = async (req, res, next) => {
   try {
@@ -13,14 +13,14 @@ module.exports = async (req, res, next) => {
 
     const payload = jwt.verify(token, process.env.SECRET_KEY);
 
-    const account = await Account.findOne({ _id: payload._id });
-    if (!account) {
+    const user = await User.findOne({ _id: payload._id });
+    if (!user) {
       let error = new Error('Account not found. Please sign up');
       error.status = 401;
       throw error;
     }
 
-    if (!account.isVerified) {
+    if (!user.isVerified) {
       let error = new Error(
         `Account not verified. Please mail us at ${process.env.NOTIFY_EMAIL} to activate the account`
       );
@@ -28,17 +28,25 @@ module.exports = async (req, res, next) => {
       throw error;
     }
 
-    const { _id, name, mobile, isVerified, isSmsEnabled } = account;
+    const account = await Account.findOne({ _id: user.activeAccountId });
+    if (!account) {
+      let error = new Error('Account not found. Please sign up');
+      error.status = 401;
+      throw error;
+    }
 
-    req.account = { _id, name, mobile, isVerified, isSmsEnabled };
+    req.user = { _id: user._id, mobile: user.mobile };
+    req.account = { _id: account._id, name: account.name };
 
     next();
   } catch (error) {
-    if (error.message === 'jwt expired') {
+    if (['invalid signature', 'jwt expired', 'jwt malformed'].includes(error.message)) {
       let err = new Error('Session expired. Please login again');
       err.status = 401;
       next(err);
+    } else {
+      error.status = 401;
+      next(error);
     }
-    next(error);
   }
 };
