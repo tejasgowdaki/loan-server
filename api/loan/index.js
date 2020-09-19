@@ -14,8 +14,6 @@ const {
   constructDeletePaymentObject
 } = require('./service');
 
-const sendSMS = require('../../helpers/sms');
-
 const fetchAll = async (req, res) => {
   const loans = await Loan.find({ accountId: req.account._id });
 

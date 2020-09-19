@@ -4,13 +4,20 @@ const AccountSchema = new Schema(
   {
     name: {
       type: String,
-      unique: true,
       required: true
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
+    },
+    type: {
+      type: String,
+      enum: ['loan', 'chit'],
+      required: true
+    },
+    startDate: {
+      type: Date
     },
     config: {
       isSmsEnabled: {
@@ -19,7 +26,7 @@ const AccountSchema = new Schema(
       },
       interestRate: {
         type: Number,
-        default: 1
+        default: 0
       },
       isShowNextInterest: {
         type: Boolean,
