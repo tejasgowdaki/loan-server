@@ -36,7 +36,7 @@ module.exports = async (req, res, next) => {
     }
 
     req.user = { _id: user._id, mobile: user.mobile };
-    req.account = { _id: account._id, name: account.name };
+    req.account = { _id: account._id, name: account.name, type: account.type };
 
     next();
   } catch (error) {

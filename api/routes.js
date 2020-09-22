@@ -11,6 +11,7 @@ const savingRouter = require('./saving/routes');
 const loanRouter = require('./loan/routes');
 const transactionRouter = require('./transaction/routes');
 const statsRouter = require('./stats/routes');
+const chitRouter = require('./chit/routes');
 
 const router = (app) => {
   const mainRouter = express.Router();
@@ -22,6 +23,7 @@ const router = (app) => {
   mainRouter.use('/loans', authenticate, loanRouter, apiError);
   mainRouter.use('/transactions', authenticate, transactionRouter, apiError);
   mainRouter.use('/stats', authenticate, statsRouter, apiError);
+  mainRouter.use('/chits', authenticate, chitRouter, apiError);
 
   // If no routes matches
   mainRouter.use((req, res, next) => {

@@ -2,7 +2,7 @@ const response = require('../../helpers/response');
 
 const { Account, User } = require('../../models');
 
-const { generateJwtToken, generateAndSendOTP, validate } = require('./service');
+const { generateJwtToken, generateAndSendOTP, validateAccount, validateUser } = require('./service');
 
 const sendSMS = require('../../helpers/sms');
 
@@ -71,18 +71,21 @@ const login = async (req, res) => {
 const signUp = async (req, res) => {
   const name = (req.body.name || '').trim();
   const mobile = (req.body.mobile || '').trim();
+  const type = req.body.type;
 
-  await validate({ name, mobile });
-
-  let account = null;
+  await validateUser({ mobile });
 
   const existingUser = await User.findOne({ mobile });
 
+  let account = null;
+
   if (existingUser) {
-    account = await Account.create({ name, userId: existingUser._id });
+    await validateAccount({ name, type, userId: existingUser._id });
+    account = await Account.create({ name, userId: existingUser._id, type });
   } else {
     const user = await User.create({ mobile });
-    account = await Account.create({ name, userId: user._id });
+    await validateAccount({ name, type, userId: user._id });
+    account = await Account.create({ name, userId: user._id, type });
     await User.findByIdAndUpdate(user._id, { activeAccountId: account._id });
   }
 

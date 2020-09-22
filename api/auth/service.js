@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { User } = require('../../models');
+const { User, Account } = require('../../models');
 
 const sendSMS = require('../../helpers/sms');
 const { isNumber } = require('../../helpers/utils');
@@ -31,14 +31,8 @@ const generateAndSendOTP = async (userId, mobile) => {
   }
 };
 
-const validate = async ({ name, mobile }, id = null) => {
+const validateUser = async ({ mobile }) => {
   try {
-    if (!name) {
-      let error = new Error('Name is required');
-      error.status = 422;
-      throw error;
-    }
-
     if (!mobile) {
       let error = new Error('Mobile number is required');
       error.status = 422;
@@ -51,7 +45,27 @@ const validate = async ({ name, mobile }, id = null) => {
       throw error;
     }
 
-    const existingAccountByName = await Account.findOne({ name });
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const validateAccount = async ({ name, type, userId }, id = null) => {
+  try {
+    if (!name) {
+      let error = new Error('Name is required');
+      error.status = 422;
+      throw error;
+    }
+
+    if (!type) {
+      let error = new Error('Account type is required');
+      error.status = 422;
+      throw error;
+    }
+
+    const existingAccountByName = await Account.findOne({ name, userId });
     if (existingAccountByName && (!id || id.toString() !== existingAccountByName._id.toString())) {
       let error = new Error('Name already exists');
       error.status = 422;
@@ -64,4 +78,4 @@ const validate = async ({ name, mobile }, id = null) => {
   }
 };
 
-module.exports = { generateJwtToken, generateAndSendOTP, validate };
+module.exports = { generateJwtToken, generateAndSendOTP, validateUser, validateAccount };

@@ -4,8 +4,6 @@ const { Member, Saving } = require('../../models');
 
 const { validate } = require('./service');
 
-const sendSMS = require('../../helpers/sms');
-
 const fetchAll = async (req, res) => {
   const members = await Member.find({ accountId: req.account._id });
   res.status(200).json(response.success({ members }));

@@ -12,8 +12,6 @@ const {
   updateBulkSavings
 } = require('./service');
 
-const sendSMS = require('../../helpers/sms');
-
 const fetchAll = async (req, res) => {
   const savings = await Saving.find({ accountId: req.account._id });
 

@@ -26,10 +26,13 @@ const fetchOne = async (req, res) => {
 
 const create = async (req, res) => {
   const name = (req.body.name || '').trim();
+  const type = req.body.type;
+  const startDate = req.body.startDate;
+  const config = req.body.config;
 
-  await validate({ name });
+  await validate({ name, type, userId: req.user._id });
 
-  const account = await Account.create({ name, userId: req.user._id });
+  const account = await Account.create({ name, userId: req.user._id, type, config, startDate });
 
   sendSMS(`A new account has been created in Loan Manager with Name: ${name}`, [process.env.NOTIFY_MOBILE]);
 
@@ -46,10 +49,12 @@ const update = async (req, res) => {
   }
 
   const name = (req.body.name || '').trim();
+  const startDate = req.body.startDate;
+  const config = req.body.config;
 
   await validate({ name }, req.params.id);
 
-  const account = await Account.findByIdAndUpdate(req.params.id, { name }, { new: true });
+  const account = await Account.findByIdAndUpdate(req.params.id, { name, config, startDate }, { new: true });
 
   res.status(200).json(response.success({ account }));
 };
