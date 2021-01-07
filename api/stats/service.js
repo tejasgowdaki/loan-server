@@ -1,20 +1,24 @@
-const moment = require('moment');
-
 const { Member, Saving, Loan, Transaction } = require('../../models');
 
-const monthlySavingAggregationQuery = (accountId, date) => [
+const monthlySavingAggregationQuery = (accountId, startDate, endDate) => [
   { $match: { accountId } },
   { $unwind: '$deposits' },
   { $group: { _id: null, deposits: { $push: '$deposits' } } },
   {
     $project: {
       _id: 0,
-      deposits: { $filter: { input: '$deposits', as: 'deposit', cond: { $gte: ['$$deposit.date', date] } } }
+      deposits: {
+        $filter: {
+          input: '$deposits',
+          as: 'deposit',
+          cond: { $and: [{ $gte: ['$$deposit.date', startDate] }, { $lte: ['$$deposit.date', endDate] }] }
+        }
+      }
     }
   }
 ];
 
-const monthlyLoanAggregationQuery = (accountId, date) => {
+const monthlyLoanAggregationQuery = (accountId, startDate, endDate) => {
   try {
     const query = [
       { $match: { accountId } },
@@ -26,7 +30,13 @@ const monthlyLoanAggregationQuery = (accountId, date) => {
             {
               $project: {
                 _id: 0,
-                loans: { $filter: { input: '$loans', as: 'loan', cond: { $gte: ['$$loan.date', date] } } }
+                loans: {
+                  $filter: {
+                    input: '$loans',
+                    as: 'loan',
+                    cond: { $and: [{ $gte: ['$$loan.date', startDate] }, { $lte: ['$$loan.date', endDate] }] }
+                  }
+                }
               }
             }
           ],
@@ -36,7 +46,13 @@ const monthlyLoanAggregationQuery = (accountId, date) => {
             {
               $project: {
                 _id: 0,
-                payments: { $filter: { input: '$payments', as: 'payment', cond: { $gte: ['$$payment.date', date] } } }
+                payments: {
+                  $filter: {
+                    input: '$payments',
+                    as: 'payment',
+                    cond: { $and: [{ $gte: ['$$payment.date', startDate] }, { $lte: ['$$payment.date', endDate] }] }
+                  }
+                }
               }
             }
           ]
@@ -100,10 +116,9 @@ const fetchTransactionStats = async (accountId) => {
   }
 };
 
-const fetchMonthlySavings = async (accountId) => {
+const fetchMonthlySavings = async (accountId, startDate, endDate) => {
   try {
-    const date = moment().startOf('month').toDate();
-    const result = await Saving.aggregate(monthlySavingAggregationQuery(accountId, date));
+    const result = await Saving.aggregate(monthlySavingAggregationQuery(accountId, startDate, endDate));
     const savings = result[0] ? (result[0] || {}).deposits || [] : [];
     return savings.reduce((sum, saving) => (sum += saving.amount), 0);
   } catch (error) {
@@ -111,10 +126,9 @@ const fetchMonthlySavings = async (accountId) => {
   }
 };
 
-const fetchMonthlyLoan = async (accountId) => {
+const fetchMonthlyLoan = async (accountId, startDate, endDate) => {
   try {
-    const date = moment().startOf('month').toDate();
-    const result = await Loan.aggregate(monthlyLoanAggregationQuery(accountId, date));
+    const result = await Loan.aggregate(monthlyLoanAggregationQuery(accountId, startDate, endDate));
     const loans =
       result[0] && result[0].loans && result[0].loans[0] && result[0].loans[0].loans ? result[0].loans[0].loans : [];
     const payments =
@@ -132,11 +146,12 @@ const fetchMonthlyLoan = async (accountId) => {
   }
 };
 
-const fetchMonthlyTransaction = async (accountId) => {
+const fetchMonthlyTransaction = async (accountId, startDate, endDate) => {
   try {
-    const date = moment().startOf('month').toDate();
-
-    const transactions = await Transaction.find({ accountId, date: { $gte: date } });
+    const transactions = await Transaction.find({
+      accountId,
+      $and: [{ date: { $gte: startDate } }, { date: { $lte: endDate } }]
+    });
 
     return transactions.reduce(
       (data, transaction) => {
