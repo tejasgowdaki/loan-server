@@ -1,0 +1,12 @@
+module.exports = {
+  apps: [
+    {
+      name: 'loan-server',
+      script: './build/index.js',
+      exec_mode: 'cluster',
+      env: {
+        NODE_ENV: 'production'
+      }
+    }
+  ]
+};
