@@ -12,3 +12,5 @@ config/env.json
 *.log
 
 /dump
+
+deploy.sh
