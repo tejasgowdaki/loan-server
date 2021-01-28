@@ -13,6 +13,7 @@
     "precommit": "lint-staged",
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
@@ -33,6 +34,11 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.20",
     "morgan": "^1.10.0",
+    "webpack": "^5.18.0",
+    "webpack-node-externals": "^2.5.2",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.4.0"
   }
 }
