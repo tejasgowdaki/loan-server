@@ -36,6 +36,8 @@ const login = async (req, res) => {
   const mobile = (req.body.mobile || '').trim();
   const otp = (req.body.otp || '').trim();
 
+  const users = await await User.find({});
+
   const existingUserWithMobile = await User.findOne({ mobile });
 
   if (!existingUserWithMobile) {
@@ -57,8 +59,6 @@ const login = async (req, res) => {
     error.status = 401;
     throw error;
   }
-
-  await User.findByIdAndUpdate(existingUserWithMobile._id, { otp: null });
 
   const token = generateJwtToken({
     _id: existingUserWithMobile._id,
