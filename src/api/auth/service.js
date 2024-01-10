@@ -2,14 +2,14 @@ const jwt = require('jsonwebtoken');
 
 const { User, Account } = require('../../models');
 
-const sendSMS = require('../../helpers/sms');
+// const sendSMS = require('../../helpers/sms');
 const { isNumber } = require('../../helpers/utils');
 
-const tokenExpiry = 30 * 24 * 60 * 60; // 30 days
+// const tokenExpiry = 30 * 24 * 60 * 60; // 30 days
 
 const generateJwtToken = (body) => {
   try {
-    const token = jwt.sign(body, process.env.SECRET_KEY, { expiresIn: tokenExpiry });
+    const token = jwt.sign(body, process.env.SECRET_KEY);
 
     return token;
   } catch (error) {
@@ -23,7 +23,7 @@ const generateAndSendOTP = async (userId, mobile) => {
 
     await User.findByIdAndUpdate(userId, { otp });
 
-    sendSMS(`To login for loan manager use OTP - ${otp}`, [mobile]);
+    // sendSMS(`To login for loan manager use OTP - ${otp}`, [mobile]);
 
     return;
   } catch (error) {

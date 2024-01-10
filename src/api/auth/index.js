@@ -4,7 +4,7 @@ const { Account, User } = require('../../models');
 
 const { generateJwtToken, generateAndSendOTP, validateAccount, validateUser } = require('./service');
 
-const sendSMS = require('../../helpers/sms');
+// const sendSMS = require('../../helpers/sms');
 
 const sendLoginOTP = async (req, res) => {
   const mobile = (req.body.mobile || '').trim();
@@ -25,7 +25,7 @@ const sendLoginOTP = async (req, res) => {
     throw error;
   }
 
-  generateAndSendOTP(existingUserWithMobile._id, existingUserWithMobile.mobile);
+  // generateAndSendOTP(existingUserWithMobile._id, existingUserWithMobile.mobile);
 
   res
     .status(200)
@@ -89,9 +89,9 @@ const signUp = async (req, res) => {
     await User.findByIdAndUpdate(user._id, { activeAccountId: account._id });
   }
 
-  sendSMS(`A new account has been created in Loan Manager with Name: ${name} and Mobile: ${mobile}`, [
-    process.env.NOTIFY_MOBILE
-  ]);
+  // sendSMS(`A new account has been created in Loan Manager with Name: ${name} and Mobile: ${mobile}`, [
+  //   process.env.NOTIFY_MOBILE
+  // ]);
 
   res.status(201).json(response.success({ account }));
 };

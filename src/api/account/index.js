@@ -4,7 +4,7 @@ const { Account, User } = require('../../models');
 
 const { validate } = require('./service');
 
-const sendSMS = require('../../helpers/sms');
+// const sendSMS = require('../../helpers/sms');
 const { generateJwtToken } = require('../auth/service');
 
 const fetchAll = async (req, res) => {
@@ -34,7 +34,7 @@ const create = async (req, res) => {
 
   const account = await Account.create({ name, userId: req.user._id, type, config, startDate });
 
-  sendSMS(`A new account has been created in Loan Manager with Name: ${name}`, [process.env.NOTIFY_MOBILE]);
+  // sendSMS(`A new account has been created in Loan Manager with Name: ${name}`, [process.env.NOTIFY_MOBILE]);
 
   res.status(201).json(response.success({ account }));
 };
