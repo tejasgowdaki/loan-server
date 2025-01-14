@@ -17,28 +17,28 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": "12.18.3"
+    "node": ">20.11.1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
+    "axios": "^1.6.7",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "helmet": "^4.1.0",
-    "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
-    "mongoose": "^5.9.20",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "mongoose": "^8.2.0",
     "morgan": "^1.10.0",
-    "webpack": "^5.18.0",
-    "webpack-node-externals": "^2.5.2",
-    "winston": "^3.3.3"
+    "webpack": "^5.90.3",
+    "webpack-node-externals": "^3.0.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
-    "webpack-cli": "^4.4.0"
+    "webpack-cli": "^5.1.4"
   }
 }
