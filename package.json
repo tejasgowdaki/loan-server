@@ -34,7 +34,7 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.20",
     "morgan": "^1.10.0",
-    "webpack": "^5.18.0",
+    "webpack": "^5.94.0",
     "webpack-node-externals": "^2.5.2",
     "winston": "^3.3.3"
   },
